@@ -1,0 +1,40 @@
+*{
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+}
+.ground{
+    position: absolute;
+    width: 800px;
+    height: 600px;
+    background-color: antiquewhite;
+    margin-left: 551px;
+    margin-top: 150px;
+    background: url(./background.png);
+    
+}
+.shead{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: #ffcccc;
+}
+.block{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color:black; 
+    z-index: 10000;
+}
+.food{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color:red; 
+}
+.body{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color:blue; 
+}

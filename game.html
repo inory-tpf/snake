@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="./game.css" rel="stylesheet">
+    <title>deemo</title>
+</head>
+
+<body>
+    <div class="score"></div>
+    <!-- ground -->
+    <div class="ground"></div>
+    <script>
+        var ground = document.getElementsByClassName('ground')[0]
+        var score = document.getElementsByClassName('score')[0]
+
+        //头部
+        var shead = document.createElement('div');
+        //出口
+        var door = document.createElement('div');
+        //速度
+        var time = 500;
+        //创建div计数器
+        var count = 0;
+        //每次像素
+        var step = 50;
+        var b_step = 50
+        //指示符
+        var l = 0, u = 0, r = 0, d = 0;
+        //过关条件
+        var key = 0;
+        var m_time = 2;
+        var n = 0;
+        var direct
+
+
+        shead.style.left = "0px";
+        shead.style.top = "0px";
+        shead.className = "shead";
+        var headmove = {
+            move: null,
+            interval: null,
+            clear: function () { clearInterval(headmove.interval) }
+        }
+
+        ground.insertBefore(shead, ground.childNodes[++count]);
+
+        //wall
+        var block = new Array();
+        var block_num = 40;
+        for (let j = 0; j < block_num; j++) {
+            block[j] = document.createElement('div');
+            block[j].style.left = parseInt(Math.random() * 16) * 50 + "px";
+            block[j].style.top = parseInt(Math.random() * 12) * 50 + "px";
+            block[j].className = "block";
+            ground.insertBefore(block[j], ground.childNodes[++count]);
+        }
+        //body
+    
+        //move
+        document.onkeydown = function (e) {
+            switch (e.which) {
+                case 37: {
+                    //left 
+                    if (l == 0 && headmove.move != "right") {
+
+                        headmove.move = "left";
+                        headmove.clear();
+                        fun1 = setInterval(function () {
+                            shead.style.left = parseInt(shead.style.left) - step + "px"
+                            if (parseInt(shead.style.left) < 0) {
+                                alert("game over")
+                                headmove.interval = fun1;
+                                headmove.clear();
+                            }
+                            //boom
+                            for (let j = 0; j < block_num; j++) {
+                                if (((parseInt(shead.style.left) - parseInt(block[j].style.left)) == 0) && ((parseInt(shead.style.top) - parseInt(block[j].style.top)) >= 0) && ((parseInt(shead.style.top) - parseInt(block[j].style.top)) <= 0)) {
+                                    alert("game over")
+                                    headmove.interval = fun1;
+                                    headmove.clear();
+                                }
+                            }
+                            //eat
+                            for (let j = 0; j < food_num; j++) {
+                                if (((parseInt(shead.style.left) - parseInt(food[j].style.left)) == 0) && ((parseInt(shead.style.top) - parseInt(food[j].style.top)) >= 0) && ((parseInt(shead.style.top) - parseInt(food[j].style.top)) <= 0)) {
+                                    food[j].style.display = "none"
+                                    food[j].style.left = "0"
+
+                                    key++;
+
+                                    sbody[key] = document.createElement("div");
+                                    sbody[key].className = "body";
+
+                                    sbody[key].style.left = parseInt(shead.style.left) + 50 + "px";
+                                    sbody[key].style.top = parseInt(shead.style.top) + "px";
+                                    sbody[key].style.backgroundColor = "green"
+                                    ground.insertBefore(sbody[key], ground.childNodes[++count]);
+
+                                    sbody[key].move_after = "left"
+                                    m_time = 0
+                                }
+                            }
+                            if (m_time >= 1) {
+                                body_move("left", m_time)
+                            }
+                            else {
+                                m_time++;
+                            }
+
+                        }, time)
+                        l = 1; u = 0; r = 0; d = 0;
+                        headmove.interval = fun1;
+
+                    }
+                } break;
+                case 38: {
+                    //up
+                    if (u == 0 && headmove.move != "down") {
+                        headmove.move = "up";
+                        headmove.clear();
+                        fun2 = setInterval(function () {
+                            shead.style.top = parseInt(shead.style.top) - step + "px"
+                            if (parseInt(shead.style.top) < 0) {
+                                alert("game over")
+                                headmove.interval = fun2;
+                                headmove.clear();
+                            }
+                            //boom
+                            for (let j = 0; j < block_num; j++) {
+                                if (((parseInt(shead.style.top) - parseInt(block[j].style.top)) == 0) && ((parseInt(shead.style.left) - parseInt(block[j].style.left)) >= 0) && ((parseInt(shead.style.left) - parseInt(block[j].style.left)) <= 0)) {
+                                    alert("game over")
+                                    headmove.interval = fun2;
+                                    headmove.clear();
+                                }
+                            }
+                            //eat
+                            for (let j = 0; j < food_num; j++) {
+                                if (((parseInt(shead.style.top) - parseInt(food[j].style.top)) == 0) && ((parseInt(shead.style.left) - parseInt(food[j].style.left)) >= 0) && ((parseInt(shead.style.left) - parseInt(food[j].style.left)) <= 0)) {
+                                    food[j].style.display = "none"
+                                    food[j].style.left = "0"
+                                    key++;
+
+                                    sbody[key] = document.createElement("div");
+                                    sbody[key].className = "body";
+
+                                    sbody[key].style.top = parseInt(shead.style.top) + 50 + "px";
+                                    sbody[key].style.left = parseInt(shead.style.left) + "px";
+                                    sbody[key].style.backgroundColor = "yellow"
+
+                                    ground.insertBefore(sbody[key], ground.childNodes[++count]);
+
+                                    sbody[key].move_after = "up"
+                                    m_time = 0
+                                }
+                            }
+                            if (m_time >= 1) {
+                                body_move("up", m_time)
+                            }
+                            else {
+                                m_time++
+                            }
+                        }, time)
+                        u = 1; r = 0; l = 0; d = 0;
+                        headmove.interval = fun2;
+                    }
+
+                } break;
+                case 39: {
+                    //right
+                    if (r == 0 && headmove.move != "left") {
+                        headmove.move = "right";
+                        headmove.clear();
+                        fun3 = setInterval(function () {
+                            shead.style.left = parseInt(shead.style.left) + step + "px";
+                            if (parseInt(shead.style.left) > 750) {
+                                alert("game over")
+                                headmove.interval = fun3;
+                                headmove.clear();
+                            }
+                            //boom
+                            for (let j = 0; j < block_num; j++) {
+                                if (((parseInt(shead.style.left) - parseInt(block[j].style.left)) == 0) && ((parseInt(shead.style.top) - parseInt(block[j].style.top)) >= 0) && ((parseInt(shead.style.top) - parseInt(block[j].style.top)) <= 0)) {
+                                    alert("game over")
+                                    headmove.interval = fun3;
+                                    headmove.clear();
+                                }
+                            }
+                            //eat
+                            for (let j = 0; j < food_num; j++) {
+                                if (((parseInt(shead.style.left) - parseInt(food[j].style.left)) == 0) && ((parseInt(shead.style.top) - parseInt(food[j].style.top)) >= 0) && ((parseInt(shead.style.top) - parseInt(food[j].style.top)) <= 0)) {
+                                    food[j].style.display = "none"
+                                    food[j].style.left = "0"
+
+                                    key++;
+                                    sbody[key] = document.createElement("div");
+                                    sbody[key].className = "body";
+
+                                    sbody[key].style.left = parseInt(shead.style.left) - 50 + "px";
+                                    sbody[key].style.top = parseInt(shead.style.top) + "px";
+                                    sbody[key].style.backgroundColor = "white"
+                                    ground.insertBefore(sbody[key], ground.childNodes[++count]);
+                                    console.log(sbody[key], shead.style.left);
+
+                                    sbody[key].move_after = "right"
+                                    m_time = 0
+
+                                }
+                            }
+                            if (m_time >= 1) {
+                                body_move("right", m_time)
+                            }
+                            else {
+                                m_time++;
+                            }
+
+                        }, time)
+                        r = 1; d = 0; l = 0; u = 0;
+                        headmove.interval = fun3;
+                    }
+                } break;
+                case 40: {
+                    //down
+                    if (d == 0 && headmove.move != "up") {
+                        headmove.move = "down";
+                        headmove.clear();
+                        fun4 = setInterval(function () {
+                            shead.style.top = parseInt(shead.style.top) + step + "px"
+                            if (parseInt(shead.style.top) > 550) {
+                                alert("game over")
+                                headmove.interval = fun4;
+                                headmove.clear();
+                            }
+                            //boom
+                            for (let j = 0; j < block_num; j++) {
+                                if (((parseInt(shead.style.top) - parseInt(block[j].style.top)) == 0) && ((parseInt(shead.style.left) - parseInt(block[j].style.left)) >= 0) && ((parseInt(shead.style.left) - parseInt(block[j].style.left)) <= 0)) {
+                                    alert("game over")
+                                    headmove.interval = fun4;
+                                    headmove.clear();
+                                }
+                            }
+
+                            //eat
+                            for (let j = 0; j < food_num; j++) {
+                                if (((parseInt(shead.style.top) - parseInt(food[j].style.top)) == 0) && ((parseInt(shead.style.left) - parseInt(food[j].style.left)) >= 0) && ((parseInt(shead.style.left) - parseInt(food[j].style.left)) <= 0)) {
+                                    food[j].style.display = "none"
+                                    food[j].style.left = "0"
+
+
+                                    key++;
+                                    sbody[key] = document.createElement("div");
+                                    sbody[key].className = "body";
+
+                                    sbody[key].style.top = parseInt(shead.style.top) - 50 + "px";
+                                    sbody[key].style.left = parseInt(shead.style.left) + "px";
+                                    sbody[key].style.backgroundColor = "orange"
+                                    ground.insertBefore(sbody[key], ground.childNodes[++count]);
+
+                                    sbody[key].move_after = "down"
+                                    m_time = 0
+
+                                }
+                            }
+                            if (m_time >= 1) {
+                                body_move("down", m_time)
+                            }
+                            else {
+                                m_time++
+                            }
+                        }, time)
+                        d = 1; l = 0; r = 0; u = 0;
+                        headmove.interval = fun4;
+                    }
+                } break;
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>
